@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>大喜利の回答を募集 — 大喜利で理解する LLM as a Judge（iOSDC Japan 2026）</title>
+<meta name="description" content="お題「ゴマすりiOSエンジニアが先輩に言ったこととは？」の回答を募集しています。締切は 9/13(日) 12:00。">
+<meta property="og:title" content="大喜利の回答を募集しています">
+<meta property="og:description" content="お題「ゴマすりiOSエンジニアが先輩に言ったこととは？」 締切 9/13(日) 12:00。iOSDC Japan 2026 LT「大喜利で理解する LLM as a Judge」">
+<!-- X のリンクカードに出る画像（公開 URL の絶対パス） -->
+<meta property="og:image" content="https://rockname.github.io/iosdc-2026-ogiri/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script>
+  /* ==========================================================
+     差し込む場所はここだけ。
+     - FORM_URL:  Google フォームの URL（…/viewform で終わるもの。?embedded=true はページ側で付ける）
+     - COUNT_URL: 「count」シートを「ウェブに公開」した CSV の URL（…&output=csv）
+     - COUNT_FALLBACK: 件数の取得に失敗したときに出す数
+     - DEADLINE_UTC: 締切。2026-09-13 12:00 JST = 03:00 UTC。端末のタイムゾーンには依存しない
+     確認用: ?deadline=30s（30 秒後）か ?deadline=2026-09-10T22:00:00Z（UTC。+09:00 は URL で崩れるので使わない）で締切を差し替えられる
+     ========================================================== */
+  const CONFIG = {
+    FORM_URL: "https://docs.google.com/forms/d/e/1FAIpQLSdmdCv3vTwH9kHcfAhqQykbH54lzPWfoqibqAMPMzqz3xEzTQ/viewform?usp=header",
+    COUNT_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSoMQeZo8Lqs9nXJN4ytvFmO--Z0UGB5glxdZdRNvIEmLNuVGMiFG6YYKAZRc5hNbf-p6bhS4PSwfm6/pub?gid=751805618&single=true&output=csv",
+    COUNT_FALLBACK: 0,
+    DEADLINE_UTC: Date.UTC(2026, 8, 13, 3, 0, 0),
+  };
+</script>
+<style>
+  :root{
+    --bg:#0d0d0f; --fg:#f6f3ea; --dim:#9c968a; --line:#2e2b24;
+    --accent:#f2d43a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:var(--bg);color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.6}
+  body{min-height:100vh;
+    background:radial-gradient(120% 60% at 50% -10%, #1b1822 0%, #0c0b11 55%, var(--bg) 100%)}
+  main{max-width:640px;margin:0 auto;padding:28px 20px 56px}
+  section{margin-top:40px}
+  p,h1,h2,li,a{overflow-wrap:anywhere}
+
+  .kicker{font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.08em}
+  .lead{margin-top:6px;font-size:14px;color:var(--dim)}
+  .lead b{color:var(--fg);font-weight:600}
+
+  .odai{margin-top:22px;margin-bottom:-14px;border:2px solid var(--accent);border-radius:16px;padding:22px 20px;
+    background:#100e16}
+  .odai .label{font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.1em}
+  .odai h1{margin-top:10px;font-size:26px;font-weight:800;line-height:1.35;letter-spacing:-.01em;
+    text-wrap:balance;word-break:auto-phrase}
+
+  .status{display:grid;grid-template-columns:1fr;gap:12px;margin-top:24px}
+  @media (min-width:480px){.status{grid-template-columns:1fr 1fr}}
+  .box{border:1px solid var(--line);border-radius:12px;padding:14px 14px 12px;background:rgba(0,0,0,.25)}
+  .box .t{font-size:12px;color:var(--dim)}
+  .box .v{margin-top:4px;font-size:24px;font-weight:800;line-height:1.2;
+    font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+  .box .v small{font-size:13px;font-weight:600;color:var(--dim);margin-left:2px}
+  .box .v .num{color:var(--accent)}
+  .box .sub{margin-top:2px;font-size:12px;color:var(--dim)}
+  #countdown .v{font-size:22px}
+
+  h2{font-size:18px;font-weight:800;letter-spacing:-.01em}
+  h2::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;
+    background:var(--accent);margin-right:10px;vertical-align:1px}
+
+  .form-wrap{margin-top:14px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+  .form-wrap iframe{display:block;width:100%;height:760px;border:0}
+  .form-wrap.pending{background:transparent;padding:26px 16px;text-align:center;color:var(--dim);font-size:14px}
+  .btn{display:block;margin-top:12px;padding:14px 16px;border-radius:12px;text-align:center;
+    background:var(--accent);color:#1a1608;font-weight:800;font-size:16px;text-decoration:none}
+  .btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+  .hint{margin-top:10px;font-size:12px;color:var(--dim);text-align:center}
+
+  .closed{margin-top:14px;border:2px solid var(--accent);border-radius:16px;padding:26px 20px;text-align:center}
+  .closed .big{font-size:22px;font-weight:800}
+  .closed .sub{margin-top:8px;font-size:14px;color:var(--dim)}
+
+  .card{display:block;margin-top:14px;border:1px solid var(--line);border-radius:12px;overflow:hidden;
+    background:#100e16;color:var(--fg);text-decoration:none}
+  .card img{display:block;width:100%;height:auto;aspect-ratio:1200/630;object-fit:cover;background:#000}
+  .card .body{padding:14px 16px 16px}
+  .card .site{font-size:12px;color:var(--dim)}
+  .card .title{margin-top:4px;font-size:16px;font-weight:800;line-height:1.4}
+  .card .link{margin-top:6px;font-size:13px;color:var(--accent)}
+
+  footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:#5b5548}
+
+  [hidden]{display:none !important}
+</style>
+</head>
+<body>
+<main>
+  <p class="kicker">iOSDC Japan 2026</p>
+  <p class="lead">9/13(日) の LT <b>「大喜利で理解する LLM as a Judge」</b>で読む回答を募集しています。</p>
+
+  <div class="odai">
+    <p class="label">お題</p>
+    <h1>ゴマすりiOSエンジニアが先輩に言ったこととは？</h1>
+  </div>
+
+  <section id="open">
+    <h2>回答する</h2>
+    <div class="form-wrap" id="form-wrap">
+      <iframe id="form" title="回答フォーム" hidden></iframe>
+      <p id="form-pending" hidden>フォームは準備中です。</p>
+    </div>
+    <a class="btn" id="form-link" href="#" target="_blank" rel="noopener" hidden>別のタブでフォームを開く</a>
+    <p class="hint">書くのは回答だけです。名前も連絡先も聞きません。<br>集まった回答は公開しません。当日読むのは 2 本だけです。</p>
+  </section>
+
+  <section id="closed" hidden>
+    <div class="closed">
+      <p class="big">締め切りました。ありがとうございました。</p>
+      <p class="sub">当日の LT で 2 本読みます。</p>
+    </div>
+  </section>
+
+  <div class="status">
+    <div class="box" id="countdown">
+      <p class="t">締切 9/13(日) 12:00</p>
+      <p class="v" id="remain">あと <span class="num" id="hh">--</span><small>時間</small> <span class="num" id="mm">--</span><small>分</small> <span class="num" id="ss">--</span><small>秒</small></p>
+    </div>
+    <div class="box" id="count">
+      <p class="t">集まった回答</p>
+      <p class="v">いま <span class="num" id="n">--</span><small>件</small></p>
+    </div>
+  </div>
+
+  <section>
+    <h2>この LT について</h2>
+    <a class="card" href="https://fortee.jp/iosdc-japan-2026/proposal/1bb6f1b8-5bc2-484f-8101-950d3b05ba88" target="_blank" rel="noopener">
+      <img src="og-image.png" alt="" width="1200" height="630">
+      <div class="body">
+        <p class="site">fortee.jp · iOSDC Japan 2026 · 9/13(日) LT</p>
+        <p class="title">大喜利で理解する LLM as a Judge</p>
+        <p class="link">プロポーザルを見る ↗</p>
+      </div>
+    </a>
+  </section>
+
+  <footer>お題への回答は、iOSDC Japan 2026 の LT で使うためだけに集めています。</footer>
+</main>
+
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+
+  // ---- 締切（?deadline= で差し替え。確認用）----
+  let deadline = CONFIG.DEADLINE_UTC;
+  const q = (new URLSearchParams(location.search).get("deadline") || "").trim();
+  if (/^\d+s$/.test(q)) deadline = Date.now() + parseInt(q, 10) * 1000;
+  else if (q && !Number.isNaN(Date.parse(q))) deadline = Date.parse(q);
+
+  // ---- フォーム ----
+  const formUrl = (CONFIG.FORM_URL || "").trim();
+  if (formUrl) {
+    $("form").src = formUrl + (formUrl.includes("?") ? "&" : "?") + "embedded=true";
+    $("form").hidden = false;
+    $("form-link").href = formUrl;
+    $("form-link").hidden = false;
+  } else {
+    $("form-wrap").classList.add("pending");
+    $("form-pending").hidden = false;
+  }
+
+  // ---- カウントダウン ----
+  const pad = (n) => String(n).padStart(2, "0");
+  let closed = false;
+  function tick() {
+    const left = deadline - Date.now();
+    if (left <= 0) {
+      if (!closed) {
+        closed = true;
+        $("countdown").hidden = true;
+        $("open").hidden = true;
+        $("closed").hidden = false;
+        $("form").src = "about:blank";
+      }
+      return;
+    }
+    const s = Math.floor(left / 1000);
+    $("hh").textContent = pad(Math.floor(s / 3600));
+    $("mm").textContent = pad(Math.floor((s % 3600) / 60));
+    $("ss").textContent = pad(s % 60);
+    setTimeout(tick, 1000 - (Date.now() % 1000));
+  }
+  tick();
+
+  // ---- 件数（取れなければ定数）----
+  function showCount(n) { $("n").textContent = String(n); }
+  const countUrl = (CONFIG.COUNT_URL || "").trim();
+  if (!countUrl) {
+    showCount(CONFIG.COUNT_FALLBACK);
+  } else {
+    fetch(countUrl, { cache: "no-store" })
+      .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+      .then((t) => {
+        const cell = t.replace(/^﻿/, "").split(/[\r\n,]/)[0].replace(/"/g, "").trim();
+        if (!/^\d+$/.test(cell)) throw new Error("not a number: " + cell);
+        showCount(Number(cell));
+      })
+      .catch(() => showCount(CONFIG.COUNT_FALLBACK));
+  }
+})();
+</script>
+</body>
+</html>
